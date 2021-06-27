@@ -3,9 +3,9 @@
 <form action="/visit" method="POST" role="form">
 <label>Виберіть вашого перукаря:</label>
 <select name="barber" class="form-control">
-  <option>Walter White</option>
-  <option>Jessie Pinkman</option>
-  <option>Gus Fring</option>
+  <option <%= params[:barber] == 'Walter White' ? 'selected' : '' %>>Walter White</option>
+  <option <%= params[:barber] == 'Jessie Pinkman' ? 'selected' : '' %>>Jessie Pinkman</option>
+  <option <%= params[:barber] == 'Gus Fring' ? 'selected' : '' %>>Gus Fring</option>
 </select>
 <br />
   <div class="form-group">

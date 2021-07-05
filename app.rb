@@ -3,10 +3,18 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 
-
 def get_db
-  SQLite3::Database.new 'barbershop.db'
+  return SQLite3::Database.new 'barbershop.db'
 end
+
+def save_form_data_to_database
+  db = get_db
+  db.execute 'INSERT INTO Users (username, phone, datestamp, barber, color)
+  VALUES (?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
+  db.close
+end
+
+
 
 configure do
   enable :sessions
@@ -112,15 +120,4 @@ end
 get '/secure/place' do
   erb 'This is a secret place that only <%=session[:identity]%> has access to!'
 end
-def get_db
-  return SQLite3::Database.new 'barbershop.db'
-end
-db = get_db
 
-
-def save_form_data_to_database
-  db = get_db
-  db.execute 'INSERT INTO Users (username, phone, datestamp, barber, color)
-  VALUES (?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
-  db.close
-end

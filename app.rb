@@ -4,20 +4,23 @@ require 'sinatra/reloader'
 require 'sqlite3'
 
 
+def get_db
+  SQLite3::Database.new 'barbershop.db'
+end
 
 configure do
   enable :sessions
-  @db = SQLite3::Database.new 'barbershop.db'
-  @db.execute 'CREATE TABLE IF NOT EXISTS "Messages"
+  db = get_db
+  db.execute 'CREATE TABLE IF NOT EXISTS "Users"
     (
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
       "username" TEXT,
       "phone" TEXT,
-      "email" TEXT,
-      "option" TEXT,
-      "comment" TEXT
+      "datestamp" TEXT,
+      "barber" TEXT,
+      "color" TEXT
     )'
-
+    db.close
 end
 
 helpers do
@@ -55,10 +58,11 @@ get '/about' do
 end
 
 post '/visit' do
-  params[:name]
-  params[:phone]
-  params[:date]
-  params[:barber]
+  @username=params[:name]
+  @phone=params[:phone]
+  @datetime=params[:date]
+  @barber=params[:barber]
+  @color=params[:color]
 
   hh = { 
   :name => 'Введіть ім\'я',
@@ -74,8 +78,9 @@ post '/visit' do
   end
 @message = "Вітаю, Ви, #{params[:name]}, записалися! Дата візиту - #{params[:date]}"
   file = File.open './public/visit.txt', "a+"
-  file.puts("Ім'я клієнта: #{params[:name]}, номер телефону: #{params[:phone]} Ваш перукар #{params[:barber]}, дата візиту: #{params[:date]}")
+  file.puts("Ім'я клієнта: #{@username}, номер телефону: #{@phone}, Ваш перукар #{@barber}, колір волосся #{@color}, дата візиту: #{@datetime}!")
   file.close
+  save_form_data_to_database
   erb :visit
 end
 
@@ -106,4 +111,16 @@ end
 
 get '/secure/place' do
   erb 'This is a secret place that only <%=session[:identity]%> has access to!'
+end
+def get_db
+  return SQLite3::Database.new 'barbershop.db'
+end
+db = get_db
+
+
+def save_form_data_to_database
+  db = get_db
+  db.execute 'INSERT INTO Users (username, phone, datestamp, barber, color)
+  VALUES (?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
+  db.close
 end

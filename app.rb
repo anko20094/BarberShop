@@ -145,11 +145,8 @@ end
 
 get '/showusers' do
   
-@db = SQLite3::Database.new 'barbershop.db'
-@db.results_as_hash = true
-#     @db.execute 'select * from Users' do |row|
-#     puts "#{row['username']} записався на #{row['datestamp']}"
-#     puts "==========="
-# end
+db = get_db
+@results =  db.execute 'select * from Users order by id desc'
+
 erb :showusers
 end

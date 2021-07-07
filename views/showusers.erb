@@ -1,0 +1,11 @@
+<h1>Here's result:</h1>
+<table border='1'>
+
+
+<% @db.execute 'select * from Users' do |row| %>
+    <tr><td><%= print "#{row['username']} записався на #{row['datestamp']}" %></td></tr>
+<% end %>
+</table>
+
+<a href='/'>Main site</a>
+

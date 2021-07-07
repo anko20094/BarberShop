@@ -4,7 +4,9 @@ require 'sinatra/reloader'
 require 'sqlite3'
 
 def get_db
-  return SQLite3::Database.new 'barbershop.db'
+  db = SQLite3::Database.new 'barbershop.db'
+  db.results_as_hash = true
+  return db
 end
 
 def save_form_data_to_database
@@ -14,10 +16,7 @@ def save_form_data_to_database
   db.close
 end
 
-
-
-configure do
-  enable :sessions
+def c_users
   db = get_db
   db.execute 'CREATE TABLE IF NOT EXISTS "Users"
     (
@@ -30,6 +29,29 @@ configure do
     )'
     db.close
 end
+
+def c_barbers
+  db = get_db
+  db.execute 'CREATE TABLE IF NOT EXISTS "Barbers"
+    (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "barber" TEXT
+    )'
+  db.execute 'insert into Barbers (barber) Select "Walter White"   Where not exists(select barber from Barbers where barber="Walter White")'
+  db.execute 'insert into Barbers (barber) Select "Jessie Pinkman" Where not exists(select barber from Barbers where barber="Jessie Pinkman")'
+  db.execute 'insert into Barbers (barber) Select "Gus Fring"      Where not exists(select barber from Barbers where barber="Gus Fring")'
+  db.close
+end
+
+
+configure do
+  enable :sessions
+
+  c_users
+  c_barbers
+
+end
+
 
 helpers do
   def username
@@ -122,5 +144,12 @@ get '/secure/place' do
 end
 
 get '/showusers' do
-  erb "Hello World"
+  
+@db = SQLite3::Database.new 'barbershop.db'
+@db.results_as_hash = true
+#     @db.execute 'select * from Users' do |row|
+#     puts "#{row['username']} записався на #{row['datestamp']}"
+#     puts "==========="
+# end
+erb :showusers
 end

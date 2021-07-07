@@ -1,7 +1,17 @@
 <h1>Here's result:</h1>
 
-<table class='table' border='1'>
+<table class='table table-striped'>
+<thead>
+<tr>
+    <th>Ім'я</th>
+    <th>Телефон</th>
+    <th>Дата</th>
+    <th>Перукар</th>
+    <th>Колір волосся</th>
 
+</tr>
+</thead>
+<tbody>
 <% @results.each do |row| %>
     <tr>
     <td><%= row['username'] %></td>
@@ -11,6 +21,7 @@
     <td><%= row['color'] %></td>
     </tr>
 <% end %>
+</tbody>
 </table>
 
 <a href='/'>Main site</a>

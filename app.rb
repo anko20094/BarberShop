@@ -40,10 +40,14 @@ def c_barbers
   db.execute 'insert into Barbers (barber) Select "Walter White"   Where not exists(select barber from Barbers where barber="Walter White")'
   db.execute 'insert into Barbers (barber) Select "Jessie Pinkman" Where not exists(select barber from Barbers where barber="Jessie Pinkman")'
   db.execute 'insert into Barbers (barber) Select "Gus Fring"      Where not exists(select barber from Barbers where barber="Gus Fring")'
+
   db.close
 end
 
-
+before do
+  db = get_db
+  @barbers =  db.execute 'select * from Barbers'
+end
 configure do
   enable :sessions
 
@@ -99,17 +103,18 @@ post '/visit' do
   :phone => 'Введіть телефон',
   :date => 'Введіть дату та час'
   }
-# для уожної пари ключ-знгачення
+  # для уожної пари ключ-знгачення
   hh.each do |key, value|
     if params[key] == ''
       @error = hh[key]
     return erb :visit
   end
   end
-@message = "Вітаю, Ви, #{params[:name]}, записалися! Дата візиту - #{params[:date]}"
+  @message = "Вітаю, Ви, #{params[:name]}, записалися! Дата візиту - #{params[:date]}"
   file = File.open './public/visit.txt', "a+"
   file.puts("Ім'я клієнта: #{@username}, номер телефону: #{@phone}, Ваш перукар #{@barber}, колір волосся #{@color}, дата візиту: #{@datetime}!")
   file.close
+
   save_form_data_to_database
   erb :visit
 end

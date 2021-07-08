@@ -1,11 +1,12 @@
+
 <h2>Записатися</h2>
 
 <form action="/visit" method="POST" role="form">
 <label>Виберіть вашого перукаря:</label>
 <select name="barber" class="form-control">
-  <option <%= params[:barber] == 'Walter White' ? 'selected' : '' %>>Walter White</option>
-  <option <%= params[:barber] == 'Jessie Pinkman' ? 'selected' : '' %>>Jessie Pinkman</option>
-  <option <%= params[:barber] == 'Gus Fring' ? 'selected' : '' %>>Gus Fring</option>
+<% @barbers.each do |item| %>
+  <option <%= @barber == item['barber'] ? 'selected' : '' %>><%= item['barber']%></option>
+<% end %>
 </select>
 <br />
   <div class="form-group">
@@ -22,7 +23,6 @@
     <label>Коли Вас чекати? </label>
     <input id="datetimepicker" type="text" name="date" class="form-control" placeholder="Введіть дату й час свого візиту" value="<%= params[:date]%>">
   </div>
-
   <div class="form-group">
     <label>Колір Вашого волосся буде: </label>
     <select name="color" id="color">

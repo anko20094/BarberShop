@@ -37,11 +37,23 @@ def c_barbers
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
       "barber" TEXT
     )'
-  db.execute 'insert into Barbers (barber) Select "Walter White"   Where not exists(select barber from Barbers where barber="Walter White")'
-  db.execute 'insert into Barbers (barber) Select "Jessie Pinkman" Where not exists(select barber from Barbers where barber="Jessie Pinkman")'
-  db.execute 'insert into Barbers (barber) Select "Gus Fring"      Where not exists(select barber from Barbers where barber="Gus Fring")'
+  # db.execute 'insert into Barbers (barber) Select "Walter White"   Where not exists(select barber from Barbers where barber="Walter White")'
+  # db.execute 'insert into Barbers (barber) Select "Jessie Pinkman" Where not exists(select barber from Barbers where barber="Jessie Pinkman")'
+  # db.execute 'insert into Barbers (barber) Select "Gus Fring"      Where not exists(select barber from Barbers where barber="Gus Fring")'
 
   db.close
+end
+
+def is_barber_exists? db, name
+  db.execute('select * from Barbers where barber=?', [name]).length > 0
+end
+
+def seed_db db, barbers
+  barbers.each do |barber|
+    if !is_barber_exists? db, barber
+      db.execute 'insert into Barbers (barber) values (?)', [barber]
+    end
+  end
 end
 
 before do
@@ -49,11 +61,13 @@ before do
   @barbers =  db.execute 'select * from Barbers'
 end
 configure do
+  db = get_db
   enable :sessions
 
   c_users
   c_barbers
 
+  seed_db db, ['Walter White', 'Jessie Pinkman', 'Gus Fring', 'Danylko Gigi',]
 end
 
 

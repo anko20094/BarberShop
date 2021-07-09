@@ -4,10 +4,12 @@
 <form action="/visit" method="POST" role="form">
 <label>Виберіть вашого перукаря:</label>
 <select name="barber" class="form-control">
+  <!-- Задання номер 3 -->
 <% @barbers.each do |item| %>
   <option <%= @barber == item['barber'] ? 'selected' : '' %>><%= item['barber']%></option>
 <% end %>
 </select>
+<!-- Задання номер 3 завершення -->
 <br />
   <div class="form-group">
     <label>Введіть своє ім'я:</label>

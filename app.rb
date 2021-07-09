@@ -15,7 +15,7 @@ def save_form_data_to_database
   VALUES (?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
   db.close
 end
-
+# Функція c_users для створення таблиці "Users", якщо її немає
 def c_users
   db = get_db
   db.execute 'CREATE TABLE IF NOT EXISTS "Users"
@@ -29,7 +29,7 @@ def c_users
     )'
     db.close
 end
-
+# Функція c_barbers для створення таблиці "Users" і вставлення перукарів, спосіб №1, запити SQL
 def c_barbers
   db = get_db
   db.execute 'CREATE TABLE IF NOT EXISTS "Barbers"
@@ -43,7 +43,7 @@ def c_barbers
 
   db.close
 end
-
+# Функція seed_db для вставлення перукарів, спосіб №2, універсальний з відосіка
 def is_barber_exists? db, name
   db.execute('select * from Barbers where barber=?', [name]).length > 0
 end
@@ -55,18 +55,19 @@ def seed_db db, barbers
     end
   end
 end
-
+# Для завдання №3
 before do
   db = get_db
   @barbers =  db.execute 'select * from Barbers'
 end
+
 configure do
   db = get_db
   enable :sessions
 
   c_users
   c_barbers
-
+# Для завдання №3
   seed_db db, ['Walter White', 'Jessie Pinkman', 'Gus Fring', 'Danylko Gigi',]
 end
 
@@ -117,6 +118,7 @@ post '/visit' do
   :phone => 'Введіть телефон',
   :date => 'Введіть дату та час'
   }
+  
   # для уожної пари ключ-знгачення
   # hh.each do |key, value|
   #   if params[key] == ''
